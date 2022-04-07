@@ -1,6 +1,7 @@
 import numpy as np
 from Node import *
 from A_Start import *
+import Time
 
 if __name__ == "__main__":
 
