@@ -1,6 +1,6 @@
 import numpy as np
 from Node import *
-
+import Time
 if __name__ == "__main__":
 
     # >>>>>> CREACIÓN DE MAPA <<<<<<
