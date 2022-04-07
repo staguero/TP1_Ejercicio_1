@@ -75,8 +75,8 @@ class A_Star():
                     for i in range(mapa_filas):
                         if self.mapa[i][j].x == minF.x:
                             if self.mapa[i][j].y == minF.y:
-                                if (j>=mapa_columnas):
-                                    if (i>=mapa_filas):
+                                if (j>=mapa_columnas-1):
+                                    if (i>=mapa_filas-1):
                                         if (self.update_parent(self.mapa[i-1][j-1],minF)):
                                             self.mapa[i-1][j-1].parent = minF
                                         if (self.update_parent(self.mapa[i][j-1],minF)):
@@ -113,9 +113,9 @@ class A_Star():
                                             self.mapa[i+1][j].parent   = minF
                                         if (self.update_parent(self.mapa[i+1][j+1],minF)):
                                             self.mapa[i+1][j+1].parent = minF
-                                if  (j<mapa_columnas) and (j>0):
+                                if  (j<mapa_columnas-1) and (j>0):
                                     if (i>0):
-                                        if (i<mapa_filas):
+                                        if (i<mapa_filas-1):
 
                                             if (self.update_parent(self.mapa[i+1][j],minF)):
                                                 self.mapa[i+1][j].parent   = minF
