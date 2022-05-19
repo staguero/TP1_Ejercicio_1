@@ -1,86 +1,98 @@
 import numpy as np
+from pyparsing import line_start
+from requests import delete
 from Node import *
 from A_Star import *
 from Dibujar import *
+import random
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
     # >>>>>> CREACIÓN DE MAPA <<<<<<
     #Solicitud de datos
-    columnas_estante=int(input('Cantidad de columnas por estantería: '))
-    estantes_f=int(input('Cantidad de Filas de estantería: '))
-    estantes_c=int(input('Cantidad de Columnas de estantería: '))
-    #Elaboración de matriz "MAPA"
-    mapa_filas = 2*estantes_f+4+(estantes_f-1)*2
-    mapa_columnas= estantes_c*columnas_estante+4+(estantes_c-1)*2
-    mapa_dimensiones= [mapa_filas,mapa_columnas]
-    mapa=[]
-    mapa = [[Node(i,j,None) for j in range(mapa_columnas)] for i in range(mapa_filas)]
-    for j in range(mapa_columnas):
-        for i in range(mapa_filas):
-            mapa[i][j].setID("Empty")
 
-    #Asignacion de estantes y su nombre
-    fin_columnas=mapa_columnas-(2+columnas_estante)
-    m=np.linspace(2,fin_columnas,estantes_c)
-    print(estantes_c)
-    fin_filas=mapa_filas-(2+2)
-    m2=np.linspace(2,fin_filas,estantes_f)
-    print(">>>>>>>>> Columna Comienzo Estantería <<<<<<<<<")
-    print(m)
-    print(">>>>>>>>> Fila  Comienzo Estantería <<<<<<<<<")
-    print(m2)
-    valor=1
-    for j in m:
-        for i in m2:
-            col=int(j)
-            for k in range(columnas_estante): 
-                mapa[int(i)][col].setID( "Shelf" + str(valor) )
-                mapa[int(i)+1][col].setID("Shelf" + str(valor+columnas_estante ) )
-                col+=1
-                valor+=1
-            valor+=columnas_estante
-    
-    #Dibujo del mapa
-    mapa_dibujo=[]
-    mapa_dibujo = [[0 for j in range(mapa_columnas)] for i in range(mapa_filas)]
-    print(">>>>>>>>> AREA DE TRABAJO <<<<<<<<<")
-    for j in range(mapa_columnas):
-        for i in range(mapa_filas):
-            if mapa[i][j].id == "Empty":
-                mapa_dibujo[i][j]="0 "
-            else:
-                mapa_dibujo[i][j]=mapa[i][j].id[5:]
-    for i in range(mapa_filas):
-        print(mapa_dibujo[i])
-    
-    mapa_color=Dibujar(50,mapa_columnas,mapa_filas,columnas_estante,estantes_f,estantes_c)
-    mapa_color.asignar_posiciones_casilleros()
-    mapa_color.dibujar_mapa()
+    lista = []
+    distancia_recorrida = []
+    nodos_expandidos = []
+    tiempo_empleado = []
+    columnas_estante=2
+    for k in range (1,50):
+        estantes_c = k
+        estantes_f = k
 
-    # >>>>>> TRANSPORTE <<<<<<
-    # Introduccion de datos
-    inicio=input('Ingrese inicio: ')
-    fin=input('Ingrese final: ')
+        #Elaboración de matriz "MAPA"
+        mapa_filas = 2*estantes_f+4+(estantes_f-1)*2
+        mapa_columnas= estantes_c*columnas_estante+4+(estantes_c-1)*2
+        mapa_dimensiones= [mapa_filas,mapa_columnas]
+        mapa=[]
+        mapa = [[Node(i,j,None) for j in range(mapa_columnas)] for i in range(mapa_filas)]
+        for j in range(mapa_columnas):
+            for i in range(mapa_filas):
+                mapa[i][j].setID("Empty")
 
-    for j in range(mapa_columnas):
-        for i in range(mapa_filas):
-            if mapa[i][j].id is not None:
-                if mapa[i][j].id[5:]==inicio:
-                    current_node = mapa[i][j]
-                if mapa[i][j].id[5:]==fin:
-                    target_node = mapa[i][j]
+        #Asignacion de estantes y su nombre
+        fin_columnas=mapa_columnas-(2+columnas_estante)
+        m=np.linspace(2,fin_columnas,estantes_c)
+        fin_filas=mapa_filas-(2+2)
+        m2=np.linspace(2,fin_filas,estantes_f)
+        valor=1
+        for j in m:
+            for i in m2:
+                col=int(j)
+                for k in range(columnas_estante): 
+                    mapa[int(i)][col].setID( "Shelf" + str(valor) )
+                    mapa[int(i)+1][col].setID("Shelf" + str(valor+columnas_estante ) )
+                    col+=1
+                    valor+=1
+                valor+=columnas_estante
 
-    path = []
-    a_estrella=A_Star(mapa,current_node,target_node)
-    path = a_estrella.start_method(mapa_columnas,mapa_filas)
+        # >>>>>> TRANSPORTE <<<<<<
+        # Introduccion de datos
+        suma_distancia = 0
+        suma_nodos = 0
+        suma_tiempo = 0
+        n_shelfs = columnas_estante*2*estantes_c*estantes_f
+        for iteraciones in range(0,100):
+            inicio = random.randint(1,n_shelfs)
+            fin = random.randint(1,n_shelfs)
+            while( inicio == fin):
+                fin = random.randint(1,n_shelfs)
 
-    print("EL CAMINO ES:")
-    print(path)
-    print()
+            for j in range(mapa_columnas):
+                for i in range(mapa_filas):
+                    if mapa[i][j].id is not None:
+                        if mapa[i][j].id[5:]==str(inicio):
+                            current_node = mapa[i][j]
+                        if mapa[i][j].id[5:]==str(fin):
+                            target_node = mapa[i][j]
 
-    #Dibujo del mapa 
-    mapa_full=mapa_color
-    mapa_full.definir_camino(path)
-    mapa_full.dibujar_mapa_full()
-    mapa_full.ventana.mainloop()
+            a_estrella=A_Star(mapa,current_node,target_node)
+            a_estrella.start_method(mapa_columnas,mapa_filas)
+            suma_distancia += a_estrella.distancia_recorrida 
+            suma_nodos += a_estrella.nodos_expandidos
+            suma_tiempo += a_estrella.tiempo_empleado
+
+        distancia_recorrida.append(suma_distancia/100)
+        nodos_expandidos.append(suma_nodos/100)
+        tiempo_empleado.append(suma_tiempo/100)
+        del a_estrella
+    x=list(range(1, 50))
+    fig, axs = plt.subplots(2, 3)
+    axs[0, 0].plot(x, distancia_recorrida)
+    axs[0, 0].set_title('Promedio de distancia recorrida')
+    axs[0, 0].set_xlabel('Dimensiones NxN del almacen')
+    axs[0, 1].plot(x, nodos_expandidos, 'tab:orange')
+    axs[0, 1].set_title('Promedio de nodos expandidos')
+    axs[0, 1].set_xlabel('Dimensiones NxN del almacen')
+    axs[0, 2].plot(x, tiempo_empleado, 'tab:green')
+    axs[0, 2].set_title('Promedio de tiempo en cada iteracion')
+    axs[0, 2].set_xlabel('Dimensiones NxN del almacen')
+    axs[0, 0].grid(axis='both', color='gray',linestyle = 'dashed')
+    axs[0, 1].grid(axis='both', color='gray',linestyle = 'dashed')
+    axs[0, 2].grid(axis='both', color='gray',linestyle = 'dashed')
+    fig.tight_layout()
+    fig.show()
+
+input()
+

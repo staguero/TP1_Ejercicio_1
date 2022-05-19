@@ -14,7 +14,7 @@ class Dibujar():
         
         self.ventana=tk.Tk()
         self.ventana.title("ÁREA DE TRABAJO")
-        self.ventana.iconbitmap("ico.ico")
+        #self.ventana.iconbitmap("ico.ico")
         #Ventana con longitud requerida
         self.ventana.geometry(f"{str(lado*self.columna)}x{str(lado*self.fila)}")
         self.ventana.resizable(0,0) #evita que se agrande o minimice
@@ -51,7 +51,7 @@ class Dibujar():
             for j in range(self.fila):
                     if [j,i] in self.camino:
                         self.interfaz.create_rectangle(i*self.lado,j*self.lado,(i+1)*self.lado,(j+1)*self.lado,fill="#76EE00")
-                    #elif [j,i] in self.casilleros:
-                    #    self.interfaz.create_rectangle(i*self.lado,j*self.lado,(i+1)*self.lado,(j+1)*self.lado,fill="#2F4F4F")
-                    #else:
-                    #    self.interfaz.create_rectangle(i*self.lado,j*self.lado,(i+1)*self.lado,(j+1)*self.lado,fill="#698B69")
+                    elif [j,i] in self.casilleros:
+                        self.interfaz.create_rectangle(i*self.lado,j*self.lado,(i+1)*self.lado,(j+1)*self.lado,fill="#2F4F4F")
+                    else:
+                        self.interfaz.create_rectangle(i*self.lado,j*self.lado,(i+1)*self.lado,(j+1)*self.lado,fill="#698B69")
