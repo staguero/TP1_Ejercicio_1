@@ -14,7 +14,6 @@ class Dibujar():
         
         self.ventana=tk.Tk()
         self.ventana.title("ÁREA DE TRABAJO")
-        #Ventana con longitud requerida
         self.ventana.geometry(f"{str(lado*self.columna)}x{str(lado*self.fila)}")
         self.ventana.resizable(0,0) #evita que se agrande o minimice
 
